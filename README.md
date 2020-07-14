@@ -1,5 +1,6 @@
-# PyTagged
-
+PyTagged
+========
+![ci-workflow](https://github.com/ntn9995/pytagged/workflows/ci-workflow/badge.svg?branch=master)
 
 ## What is it?
 PyTagged is a simple CLI utlity written in python that helps you comment out "tagged" code. For a simple example, this might be a common pattern in your code.
