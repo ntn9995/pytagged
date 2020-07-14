@@ -1,12 +1,11 @@
 import argparse
-import re
 import statistics
 import sys
 import textwrap
 import time
 from os import get_terminal_size, path
 from pathlib import Path
-from typing import IO, Iterable, List, Tuple
+from typing import IO, List
 
 from pytagged import pytagged
 from pytagged.utils import print_raw_lines
@@ -137,16 +136,17 @@ if __name__ == "__main__":
                             nargs='+',
                             help=textwrap.dedent("""\
                             one or more 'tags', this tells the program
-                            what to comment out. By default, the 'debug' tag
-                            is used.\n \n"""))
+                            what to comment out. By default, the 'debug'
+                            tag is used.\n \n"""))
 
     arg_parser.add_argument("-b", "--benchmark",
                             type=int,
                             metavar='N',
                             help=textwrap.dedent("""\
                             Number of benchmark runs, if this is supplied
-                            the program will run for N times, and print out some
-                            performance statistics. Will also ignore the -v flag.\n \n"""))
+                            the program will run for N times, and print out
+                            some performance statistics. Will also ignore the
+                            -v flag.\n \n"""))
 
     arg_parser.add_argument("-p", "--printonly",
                             action="store_true",
@@ -158,8 +158,8 @@ if __name__ == "__main__":
                             action="store_true",
                             help=textwrap.dedent("""\
                             Verbose mode, if this flag is used,
-                            the program will print out, line by line, the raw string of
-                            the modified file."""))
+                            the program will print out, line by line,
+                            the raw string of the modified file."""))
 
     args = arg_parser.parse_args()
     if args.help:
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             if benchmark_runs:
                 benchmark_single_file(path_obj, *tags)
                 sys.exit(0)
-            
+
             if printonly:
                 printonly_single_file(path_obj, *tags)
                 sys.exit(0)

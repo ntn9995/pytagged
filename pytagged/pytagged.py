@@ -11,7 +11,7 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
 
     if not tag or tag == ' ':
         raise ValueError("Tags cannot be an empty string or a whitepsace")
-    
+
     for t in tags:
         if not t or t == ' ':
             raise ValueError("Tags cannot be an empty string or a whitepsace")
@@ -39,19 +39,19 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
     # inline_scan_dur = 0
     # split_line_dur = 0
     for i, ln in enumerate(file):
-        #st = monotonic_time()
+        # st = monotonic_time()
         newlines.append(ln)
         matched = line_split_rgx.search(ln)
-        #split_line_dur += 1000 * (monotonic_time() - st)
+        # split_line_dur += 1000 * (monotonic_time() - st)
         matches.append(matched)
         if not matched:
             continue
         non_whitespace = matched.group(2)
 
-        #t = monotonic_time()
+        # st = monotonic_time()
         if inline_rgx.search(non_whitespace):
             indices.add(i)
-        #inline_scan_dur += 1000 * (monotonic_time() - st)
+        # inline_scan_dur += 1000 * (monotonic_time() - st)
 
         if non_whitespace == BLOCK_END:
             block_pairs.append((cur_block_start_idx, i))
@@ -72,7 +72,8 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
             continue
 
     """ line_scan_dur = 1000 * (monotonic_time() - line_scan_st)
-    print(f"Time taken for scanning lines & computing indices: {line_scan_dur:.2f} ms")
+    print(f"Time taken for scanning lines & computing indices: \
+        {line_scan_dur:.2f} ms")
     print(f"Time taken for rgx splitting: {split_line_dur:.2f} ms")
     print(f"Time taken for inline rgx match: {inline_scan_dur:.2f} ms") """
 
@@ -88,13 +89,13 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
         start, end = idx
         if start == -1:
             continue
-        indices -= {j for j in range(start, end+1)}
+        indices -= {j for j in range(start, end + 1)}
 
     for i, matched in enumerate(matches):
         if not matched:
             continue
         if i not in indices:
             continue
-        newlines[i] =  matched.expand(r"\g<1># \g<2>\n")
+        newlines[i] = matched.expand(r"\g<1># \g<2>\n")
 
     return newlines

@@ -1,6 +1,4 @@
 from pathlib import PurePath
-from typing import List
-from os import get_terminal_size
 
 import pytest
 
