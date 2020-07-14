@@ -1,0 +1,7 @@
+env
+.vscode
+
+# bytecode & compiled stuffs
+__pycache__/
+*.py[cod]
+*$py.class
