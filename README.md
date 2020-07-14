@@ -1,5 +1,5 @@
-PyTagged
-========
+PyTagged: Automatic Comment CLI
+===============================
 ![ci-workflow](https://github.com/ntn9995/pytagged/workflows/ci-workflow/badge.svg?branch=master)
 
 ## What is it?
@@ -11,8 +11,8 @@ def production_code():
         prod_code()
 ```
 
-While this fine for most cases (), it's a wasted instruction for every iteration of the
-and we all know how expensive function calls are in Python. What PyTagged helps you with is to turn the above code to.
+While this fine for most cases, it's a wasted instruction/call every iteration of the loop,
+and this can get expensive fast. What PyTagged helps you with is to turn the above code to:
 
 ```python
 def production_code():
