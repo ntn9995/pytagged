@@ -5,6 +5,8 @@ def fn_with_docstring():
     start of a line.                            # debug
     """
 
+    # some_str = "this should be commented out normally"  # debug
+
     # block: debug
     # triple_quote_str = """This however would be commented out
     # if it's block tagged"""
