@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import IO, Iterable, List, Tuple
 
 from pytagged import pytagged
+from pytagged.utils import print_raw_lines
 
 PY_EXT = '.py'
 
@@ -73,11 +74,6 @@ def report_performance_single_file(filename: str, num_lines: int, data: List[flo
         ))
 
     print(f"{footer_left}{footer}{footer_right}")
-
-
-def print_raw_lines(lines: Iterable[str]):
-    for i, ln in enumerate(lines):
-        print(f"|{i:3}| {repr(ln)}")
 
 
 def printonly_single_file(pathobj: Path, *tags: str):
