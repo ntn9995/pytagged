@@ -15,16 +15,16 @@ BLOCK_END = "# end"
 TRIPLE_QUOTE = '"""'
 
 
-def comment_lines(lines: List[str], mark: str, *marks: str):
-    marks_match_str = mark
+def comment_lines(lines: List[str], tag: str, *tags: str):
+    tags_match_str = tag
 
-    if len(marks) > 0:
-        marks_match_str += '|' + '|'.join(marks)
+    if len(tags) > 0:
+        tags_match_str += '|' + '|'.join(tags)
 
     line_split_rgx = re.compile(r"^(?!\s*$)(\s*)(.+)")
-    block_start_rgx = re.compile(rf"{BLOCK_START} ({marks_match_str})")
+    block_start_rgx = re.compile(rf"{BLOCK_START} ({tags_match_str})")
     triple_quote_rgx = re.compile(rf"{TRIPLE_QUOTE}")
-    inline_rgx = re.compile(rf"^(?!{POUND}).*{POUND} ({marks_match_str})$")
+    inline_rgx = re.compile(rf"^(?!{POUND}).*{POUND} ({tags_match_str})$")
     # monotonic_time = time.monotonic
     cur_block_start_idx = -1
     cur_triple_quote_start_idx = -1
@@ -99,12 +99,12 @@ def write_temp_file(pathobj: Path, lines: List[str]):
         f.writelines(lines)
 
 
-def time_comment_lines(lines: List[str], *marks: str, num_runs: int = 1) -> List[float]:
+def time_comment_lines(lines: List[str], *tags: str, num_runs: int = 1) -> List[float]:
     times = []
     timer = time.monotonic
     for _ in range(num_runs):
         start = timer()
-        comment_lines(lines, *marks)
+        comment_lines(lines, *tags)
         times.append(timer() - start)
     return times
 
@@ -177,19 +177,19 @@ if __name__ == "__main__":
                             extention within that directory.
                             Defaults to the current working dir.
                             """)
-    arg_parser.add_argument("-m", "--marks",
+    arg_parser.add_argument("-t", "--tags",
                             type=str,
                             default="debug",
                             nargs='+',
-                            help="""one or more 'marks', this tells the program
-                            what to comment out. By default, the 'debug' mark
+                            help="""one or more 'tags', this tells the program
+                            what to comment out. By default, the 'debug' tag
                             is used.
                             """)
 
     args = arg_parser.parse_args()
     try:
         path_str = args.path
-        marks = args.marks
+        tags = args.tags
         _, ext = path.splitext(path_str)
         if ext and ext != PY_EXT:
             raise NonPythonFileError(f"{path_str} is not a pytho file")
@@ -199,7 +199,7 @@ if __name__ == "__main__":
         if path_obj.is_file():
             with path_obj.open() as f:
                 lines = list(f)
-            times = time_comment_lines(lines, *marks , num_runs=1000)
+            times = time_comment_lines(lines, *tags , num_runs=1000)
             report_performance_single_file(path_str, len(lines), times)
 
     except (OSError, IOError, PermissionError, NonPythonFileError) as e:
