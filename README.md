@@ -3,12 +3,12 @@
 
 ## What is it?
 PyTagged is a simple CLI utlity written in python that helps you comment out "tagged" code. For a simple example, this might be a common pattern in your code.
-"""python
+```python
 def production_code():
     while True:
         expensive_debug_code()  # debug
         prod_code()
-"""
+```
 
 While this fine for most cases (), it's a wasted instruction for every iteration of the
 and we all know how expensive function calls are in Python. What PyTagged helps you with is to turn the above code to.
