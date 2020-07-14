@@ -3,6 +3,10 @@ name: ci-workflow
 on:
   push:
     branches: [master]
+    paths:
+      - '**.py'
+      - '**.cfg'
+      - requirements-dev.txt
   pull_request:
     branches: [master]
 
