@@ -2,7 +2,7 @@ from pathlib import PurePath
 
 import pytest
 
-from pytagged import pytagged
+from pytagged import pytagged, utils
 
 
 TEST_FILES_PATH = "./test_files"
@@ -26,23 +26,26 @@ def test_pytagged_get_newlines_raise_err(tags):
 
 
 @pytest.mark.parametrize(
-    "target_file, tags",
-    [("expected_hello.py", "debug"),
-     ("expected_hello_skip.py", "skip"),
-     ("expected_hello_slow.py", "slow")]
+    "src_file, target_file, tags",
+    [("hello.py", "expected_hello.py", "debug"),
+     ("hello.py", "expected_hello_skip.py", "skip"),
+     ("hello.py", "expected_hello_slow.py", "slow"),
+     ("hello_no_block.py", "expected_hello_no_block.py", "debug,skip,slow")]
 )
-def test_pytagged_get_newlines(target_file, tags):
+def test_pytagged_get_newlines(src_file, target_file, tags):
     target_path = PurePath(TEST_FILES_PATH, target_file)
     with open(target_path) as f:
         expected_lines = f.readlines()
 
     tags = tags.split(',')
 
-    src_path = PurePath(TEST_FILES_PATH, "hello.py")
+    src_path = PurePath(TEST_FILES_PATH, src_file)
     with open(src_path) as f:
         src_lines = f.readlines()
         f.seek(0)
         actual_lines = pytagged.get_newlines(f, *tags)
+
+    utils.print_raw_lines(actual_lines)
 
     assert src_lines != expected_lines
     assert actual_lines == expected_lines
