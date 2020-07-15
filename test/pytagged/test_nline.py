@@ -2,7 +2,7 @@ from pathlib import PurePath
 
 import pytest
 
-from pytagged import pytagged, utils
+from pytagged import nline, utils
 
 
 TEST_FILES_PATH = "./test_files"
@@ -22,7 +22,7 @@ def test_pytagged_get_newlines_raise_err(tags: str):
     # should raise ValueError
     with open(path) as f:
         with pytest.raises(ValueError):
-            _ = pytagged.get_newlines(f, *tags)
+            _ = nline.get_newlines(f, *tags)
 
 
 @pytest.mark.parametrize(
@@ -45,7 +45,7 @@ def test_pytagged_get_newlines(src_file: str, target_file: str, tags: str):
     with open(src_path) as f:
         src_lines = f.readlines()
         f.seek(0)
-        actual_lines = pytagged.get_newlines(f, *tags)
+        actual_lines = nline.get_newlines(f, *tags)
     utils.pretty_print_title("ACTUAL")
     utils.print_raw_lines(actual_lines)
     print('\n')

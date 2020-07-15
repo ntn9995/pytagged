@@ -9,7 +9,7 @@ from pathlib import Path
 from tempfile import TemporaryFile
 from typing import Sequence, IO, Tuple
 
-from pytagged import pytagged
+from pytagged import nline
 from pytagged.utils import print_raw_lines, pretty_print_title, time_fn_only
 
 PY_EXT = '.py'
@@ -25,7 +25,7 @@ class Mode(Enum):
 
 
 def printonly_single_file(io: IO, fname:str, *tags: str):
-    newlines = pytagged.get_newlines(io, *tags)
+    newlines = nline.get_newlines(io, *tags)
     pretty_print_title(fname, span=True)
     print_raw_lines(newlines)
     pretty_print_title("EOF", span=True)
@@ -34,7 +34,7 @@ def printonly_single_file(io: IO, fname:str, *tags: str):
 def printonly_files(io_seq: Sequence[Tuple[str, IO]], *tags: str):
     print_raw = print_raw_lines
     print_title = pretty_print_title
-    get_newlines = pytagged.get_newlines
+    get_newlines = nline.get_newlines
 
     def print_fn(io: IO):
         newlines = get_newlines(io, *tags)
@@ -150,7 +150,7 @@ def benchmark_files(io_seq: Sequence[Tuple[str, IO]], num_runs: int, *tags: str)
 
 
 def modify_single_file_verbose(io: IO, fname: str, *tags: str):
-    newlines = pytagged.get_newlines(io, *tags)
+    newlines = nline.get_newlines(io, *tags)
     io.seek(0)
     io.truncate()
     io.writelines(newlines)
@@ -162,7 +162,7 @@ def modify_single_file_verbose(io: IO, fname: str, *tags: str):
 def modify_files_verbose(io_seq: Sequence[Tuple[str, IO]], *tags: str):
     print_raw = print_raw_lines
     print_title = pretty_print_title
-    get_newlines = pytagged.get_newlines
+    get_newlines = nline.get_newlines
     raw_str = []
     fnames = []
 
@@ -185,14 +185,14 @@ def modify_files_verbose(io_seq: Sequence[Tuple[str, IO]], *tags: str):
 
 
 def modify_single_file(io: IO, *tags: str):
-    newlines = pytagged.get_newlines(io, *tags)
+    newlines = nline.get_newlines(io, *tags)
     io.seek(0)
     io.truncate()
     io.writelines(newlines)
 
 
 def modify_files(io_seq: Sequence[Tuple[str, IO]], *tags: str):
-    get_newlines = pytagged.get_newlines
+    get_newlines = nline.get_newlines
 
     def mod_file(f: IO):
         newlines = get_newlines(f, *tags)
