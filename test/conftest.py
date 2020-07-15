@@ -12,7 +12,8 @@ PARAMS = [("hello.py", "expected_hello.py", "debug"),
           ("hello_no_block.py", "expected_hello_no_block.py",
            "debug", "skip", "slow"),
           ("triple_quote.py", "expected_triple_quote.py", "debug"),
-          ("fake_block.py", "expected_fake_block.py", "debug")]
+          ("triple_quote_single.py", "expected_triple_quote_single.py", "debug"),
+          ("fake_block.py", "expected_fake_block.py", "debug"),]
 
 PARAMS_MULTIPLES = [("src", "target", "debug")]
 
