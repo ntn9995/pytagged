@@ -330,7 +330,7 @@ def main():
             sys.exit(0)
 
         if path_obj.is_dir():
-            py_paths = list(path_obj.glob("*.py"))
+            py_paths = list(path_obj.glob("**/*.py"))
             if not py_paths:
                 print(f"No .py files found in {path_str}")
                 sys.exit(0)
