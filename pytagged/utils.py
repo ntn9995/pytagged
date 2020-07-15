@@ -5,7 +5,7 @@ from typing import Iterable, Callable, Any, Tuple
 
 def print_raw_lines(lines: Iterable[str]):
     for i, ln in enumerate(lines):
-        print(f"|{i:3}| {repr(ln)}")
+        print(f"|{i:3}| {repr(ln)[1:-1]}")
 
 
 def pretty_print_title(title: str, width: int = 0,
