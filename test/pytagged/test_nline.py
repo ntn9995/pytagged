@@ -1,8 +1,7 @@
-from pathlib import PurePath
-
 import pytest
 
 from pytagged import nline, utils
+from conftest import path_to_src_file_singles
 
 
 @pytest.mark.parametrize(
@@ -11,15 +10,15 @@ from pytagged import nline, utils
      ("skip, ,debug"),
      ("slow, ,debug,,benchmark")]
 )
-def test_pytagged_get_newlines_raise_err(test_files_path_singles, tags: str):
+def test_pytagged_get_newlines_raise_err(tags: str):
     tags = tags.split(',')
-    path = PurePath(test_files_path_singles, "hello.py")
+    path = path_to_src_file_singles("hello.py")
 
     # call get_newlines with proper file arg, but with illegal tags
     # should raise ValueError
     with open(path) as f:
         with pytest.raises(ValueError):
-            _ = nline.get_newlines(f, *tags)
+            nline.get_newlines(f, *tags)
 
 
 def test_pytagged_get_newlines(src_to_target_params):
