@@ -357,6 +357,10 @@ def main():
                 i[1].close()
             sys.exit(0)
 
-    except (OSError, IOError, PermissionError, NonPythonFileError) as e:
+        if not path_obj.exists():
+            raise FileNotFoundError(f"Error: {path_str} not found")
+
+    except (OSError, IOError, PermissionError,
+            NonPythonFileError, FileNotFoundError) as e:
         print(e)
         sys.exit(-1)
