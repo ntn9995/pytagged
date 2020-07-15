@@ -292,12 +292,16 @@ def main():
         mode_int = 3
 
     run_mode = Mode(mode_int)
-    print(f"PyTagged mode: {run_mode.name.lower()}")
 
     path_str = args.path
     path_obj = Path(path_str)
     tags = args.tags
-    print(tags)
+
+    # block: develop
+    print("PyTagged running in dev mode")
+    print(f"cli mode: {run_mode.name.lower()}, using tags: {', '.join(tags)}")
+    print('')
+    # end
 
     try:
         if path_obj.is_file():
