@@ -1,4 +1,4 @@
-PyTagged: Automatic Comment CLI
+PyTagged: Auto Comment CLI
 ===============================
 [![ci-workflow](https://github.com/ntn9995/pytagged/workflows/ci-workflow/badge.svg?branch=master)](https://github.com/ntn9995/pytagged/actions?query=workflow%3Aci-workflow)
 
