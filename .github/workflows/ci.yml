@@ -7,6 +7,7 @@ on:
       - '**.py'
       - '**.cfg'
       - requirements-dev.txt
+      - .github/workflows/ci.yml
   pull_request:
     branches: [master]
 
