@@ -31,7 +31,8 @@ def test_pytagged_get_newlines_raise_err(tags: str):
      ("hello.py", "expected_hello_skip.py", "skip"),
      ("hello.py", "expected_hello_slow.py", "slow"),
      ("hello_no_block.py", "expected_hello_no_block.py", "debug,skip,slow"),
-     ("triple_quote.py", "expected_triple_quote.py", "debug")]
+     ("triple_quote.py", "expected_triple_quote.py", "debug"),
+     ("fake_block.py", "expected_fake_block.py", "debug")]
 )
 def test_pytagged_get_newlines(src_file: str, target_file: str, tags: str):
     target_path = PurePath(TEST_FILES_PATH, target_file)
@@ -50,7 +51,7 @@ def test_pytagged_get_newlines(src_file: str, target_file: str, tags: str):
     print('\n')
 
     utils.pretty_print_title("EXPECTED")
-    utils.print_raw_lines(actual_lines)
+    utils.print_raw_lines(expected_lines)
 
     assert src_lines != expected_lines
     assert actual_lines == expected_lines
