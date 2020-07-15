@@ -39,18 +39,15 @@ def test_cli_multiples(cleanup_test_path_multiples, src_to_target_params_multipl
     print(cmd)
     subprocess.run(cmd, check=True)
 
-    src_files = Path(src_path).glob(r"**/*.py")
-    target_files = Path(target_path).glob(r"**/*.py")
-
     expected_contents = {}
-    for f in target_files:
-        fname = str(f).split('/')[-1]
+    for f in Path(target_path).glob(r"**/*.py"):
+        fname = f.parts[-1]
         with f.open() as fin:
             expected_contents[fname] = fin.readlines()
 
     actual_contents = {}
-    for f in src_files:
-        fname = str(f).split('/')[-1]
+    for f in Path(src_path).glob(r"**/*.py"):
+        fname = f.parts[-1]
         with f.open() as fin:
             actual_contents[fname] = fin.readlines()
 
