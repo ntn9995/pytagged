@@ -5,18 +5,15 @@ import pytest
 from pytagged import nline, utils
 
 
-TEST_FILES_PATH = "./test_files"
-
-
 @pytest.mark.parametrize(
     "tags",
     [(",debug"),
      ("skip, ,debug"),
      ("slow, ,debug,,benchmark")]
 )
-def test_pytagged_get_newlines_raise_err(tags: str):
+def test_pytagged_get_newlines_raise_err(test_files_path_singles, tags: str):
     tags = tags.split(',')
-    path = PurePath(TEST_FILES_PATH, "hello.py")
+    path = PurePath(test_files_path_singles, "hello.py")
 
     # call get_newlines with proper file arg, but with illegal tags
     # should raise ValueError
@@ -25,24 +22,14 @@ def test_pytagged_get_newlines_raise_err(tags: str):
             _ = nline.get_newlines(f, *tags)
 
 
-@pytest.mark.parametrize(
-    "src_file, target_file, tags",
-    [("hello.py", "expected_hello.py", "debug"),
-     ("hello.py", "expected_hello_skip.py", "skip"),
-     ("hello.py", "expected_hello_slow.py", "slow"),
-     ("hello_no_block.py", "expected_hello_no_block.py", "debug,skip,slow"),
-     ("triple_quote.py", "expected_triple_quote.py", "debug"),
-     ("fake_block.py", "expected_fake_block.py", "debug")]
-)
-def test_pytagged_get_newlines(src_file: str, target_file: str, tags: str):
-    target_path = PurePath(TEST_FILES_PATH, target_file)
-    with open(target_path) as f:
+def test_pytagged_get_newlines(src_to_target_params):
+    src_file, target_file = src_to_target_params[:2]
+    tags = src_to_target_params[2:]
+    print(tags)
+    with open(target_file) as f:
         expected_lines = f.readlines()
 
-    tags = tags.split(',')
-
-    src_path = PurePath(TEST_FILES_PATH, src_file)
-    with open(src_path) as f:
+    with open(src_file) as f:
         src_lines = f.readlines()
         f.seek(0)
         actual_lines = nline.get_newlines(f, *tags)
