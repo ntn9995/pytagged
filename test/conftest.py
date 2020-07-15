@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Generator
 from string import Template
 
 import pytest
@@ -13,6 +13,8 @@ PARAMS = [("hello.py", "expected_hello.py", "debug"),
            "debug", "skip", "slow"),
           ("triple_quote.py", "expected_triple_quote.py", "debug"),
           ("fake_block.py", "expected_fake_block.py", "debug")]
+
+PARAMS_MULTIPLES = [("src", "target", "debug")]
 
 src_singles_path_template = Template(
     f"{TEST_FILES_PATH}/singles/src/$filename")
@@ -40,18 +42,7 @@ def path_to_target_file_multiples(fname: str) -> str:
     return target_multiples_path_template.substitute(filename=fname)
 
 
-@pytest.fixture(scope="module")
-def test_files_path() -> str:
-    return TEST_FILES_PATH
-
-
-@pytest.fixture(scope="module")
-def test_files_path_singles() -> str:
-    return f"{TEST_FILES_PATH}/singles"
-
-
-@pytest.fixture(scope="module")
-def test_files_path_multiples() -> str:
+def path_to_multiples() -> str:
     return f"{TEST_FILES_PATH}/multiples"
 
 
@@ -64,38 +55,47 @@ def src_to_target_params(request) -> Tuple[str, ...]:
     return (src_path, target_path, *request.param[2:])
 
 
-@pytest.fixture(params=PARAMS)
-def src_to_target_params_with_cleanup(request) -> Tuple[str, ...]:
-    src_fname, target_fname = request.param[0], request.param[1]
-    src_path_str = path_to_src_file_singles(src_fname)
-    with open(src_path_str) as f:
-        content_og = f.read()
+@pytest.fixture(scope="module", params=PARAMS_MULTIPLES)
+def src_to_target_params_multiples(request) -> Tuple[str, ...]:
+    src_dir_param = request.param[0]
+    target_dir_param = request.param[1]
+    tags = request.param[2:]
+    parent_path = path_to_multiples()
+    src_path = f"{parent_path}/{src_dir_param}"
+    target_path = f"{parent_path}/{target_dir_param}"
 
-    target_path_str = path_to_target_file_singles(target_fname)
-    args = (src_path_str, target_path_str, *request.param[2:])
-
-    yield args
-
-    # restore file content
-    with open(src_path_str, 'w') as f:
-        f.write(content_og)
+    return (src_path, target_path, *tags)
 
 
 @pytest.fixture
-def test_path_multiples_with_cleanup() -> Path:
-    test_path = Path(f"{TEST_FILES_PATH}/multiples/")
-    src_files = list(test_path.glob(r"src/*.py"))
-
-    print([str(f) for f in src_files])
-
+def cleanup_test_path_multiples() -> Generator[int, None, None]:
+    src_path = Path(f"{TEST_FILES_PATH}/multiples/src/")
+    src_files = list(src_path.glob("*.py"))
     src_contents = {}
-
     for f in src_files:
         fname = str(f)
         with f.open() as fin:
             src_contents[fname] = fin.read()
 
-    yield test_path
+    yield 1
+
+    for f in src_files:
+        fname = str(f)
+        with f.open('w') as fout:
+            fout.write(src_contents[fname])
+
+
+@pytest.fixture
+def cleanup_test_path_singles() -> Generator[int, None, None]:
+    src_path = Path(f"{TEST_FILES_PATH}/singles/src/")
+    src_files = list(src_path.glob("*.py"))
+    src_contents = {}
+    for f in src_files:
+        fname = str(f)
+        with f.open() as fin:
+            src_contents[fname] = fin.read()
+
+    yield 1
 
     for f in src_files:
         fname = str(f)

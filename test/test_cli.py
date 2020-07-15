@@ -1,12 +1,14 @@
+from pathlib import Path
 import subprocess
+
 
 from pytagged.utils import print_raw_lines, pretty_print_title
 
 
-def test_cli_singles(src_to_target_params_with_cleanup):
-    src_path = src_to_target_params_with_cleanup[0]
-    target_path = src_to_target_params_with_cleanup[1]
-    tags = src_to_target_params_with_cleanup[2:]
+def test_cli_singles(cleanup_test_path_singles, src_to_target_params):
+    src_path = src_to_target_params[0]
+    target_path = src_to_target_params[1]
+    tags = src_to_target_params[2:]
 
     cmd = ["pytag", src_path, "-t", *tags]
     print(cmd)
@@ -28,16 +30,17 @@ def test_cli_singles(src_to_target_params_with_cleanup):
     assert src_lines == target_lines
 
 
-def test_cli_multiples(test_path_multiples_with_cleanup):
+def test_cli_multiples(cleanup_test_path_multiples, src_to_target_params_multiples):
 
-    path = test_path_multiples_with_cleanup
-    cmd = ["pytag", path, "-t", "debug"]
+    src_path, target_path = src_to_target_params_multiples[:2]
+    tags = src_to_target_params_multiples[2:]
+    cmd = ["pytag", src_path, "-t", *tags]
 
     print(cmd)
     subprocess.run(cmd, check=True)
 
-    target_files = set(path.glob(r"expected*.py"))
-    src_files = set(path.glob(r"*.py")) - target_files
+    src_files = Path(src_path).glob(r"**/*.py")
+    target_files = Path(target_path).glob(r"**/*.py")
 
     expected_contents = {}
     for f in target_files:
