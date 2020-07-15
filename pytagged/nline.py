@@ -5,6 +5,7 @@ POUND = '#'
 BLOCK_START = "# block:"
 BLOCK_END = "# end"
 TRIPLE_QUOTE = '"""'
+TRIPLE_QUOTE_SINGLE = "'''"
 
 
 def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
@@ -23,9 +24,11 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
 
     line_split_rgx = re.compile(r"^(?!\s*$)(\s*)(.+)")
     block_start_rgx = re.compile(rf"{BLOCK_START} ({tags_match_str})")
-    triple_quote_rgx = re.compile(rf"{TRIPLE_QUOTE}")
+    triple_quote_rgx = re.compile(rf"{TRIPLE_QUOTE}|{TRIPLE_QUOTE_SINGLE}")
     inline_rgx = re.compile(
-        rf"^(?!{POUND})(?!.*{TRIPLE_QUOTE}).*{POUND} ({tags_match_str})$")
+        rf"^(?!{POUND})(?!.*({TRIPLE_QUOTE}|{TRIPLE_QUOTE_SINGLE})).*{POUND} ({tags_match_str})$")  # noqa: E501
+    print(inline_rgx)
+    print(triple_quote_rgx)
     # monotonic_time = time.monotonic
     cur_block_start_idx = -1
     cur_triple_quote_start_idx = -1
@@ -61,7 +64,7 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
             cur_block_start_idx = -1
             continue
 
-        if non_whitespace == TRIPLE_QUOTE:
+        if non_whitespace in (TRIPLE_QUOTE, TRIPLE_QUOTE_SINGLE):
             triple_quote_pairs.append((cur_triple_quote_start_idx, i))
             cur_triple_quote_start_idx = -1
             continue
