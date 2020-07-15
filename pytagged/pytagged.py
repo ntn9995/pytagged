@@ -34,6 +34,7 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
     triple_quote_pairs = []
     matches = []
     newlines = []
+    cmt_lines = []
 
     # line_scan_st = monotonic_time()
     # inline_scan_dur = 0
@@ -47,6 +48,8 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
         if not matched:
             continue
         non_whitespace = matched.group(2)
+        if non_whitespace[0] == POUND:
+            cmt_lines.append(i)
 
         # st = monotonic_time()
         if inline_rgx.search(non_whitespace):
@@ -82,7 +85,7 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
         start, end = idx
         if start == -1:
             continue
-        indices |= {j for j in range(start + 1, end)}
+        indices |= {j for j in range(start + 1, end) if j not in cmt_lines}
 
     # remove triple quote block indices
     for idx in triple_quote_pairs:
