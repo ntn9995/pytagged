@@ -2,8 +2,8 @@ name: publish-pypi
 
 on:
   push:
+    branches: [master]
     tags: v[01].[0-9]+.[0-9]+
-
   release:
     types: [created]
 
@@ -25,7 +25,6 @@ jobs:
           pip install --upgrade setuptools wheel twine
           pip install .
           pytag pytagged -t develop
-          pytag -h -t
 
       - name: Build & publish
         env:
@@ -34,5 +33,4 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
           twine check dist/*
-          ls dist/
-          cat pytagged/cli.py
+          twine upload dist/* --verbose
