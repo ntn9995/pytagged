@@ -1,0 +1,33 @@
+name: publish-pypi
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install deps
+        runs: |
+          python -m pip install --upgrade pip
+          pip install --upgrade setuptools wheel twine
+          pip install .
+          pytag pytagged -t develop
+      
+      - name: Build & publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        runs: |
+          python setup.py sdist bdist_wheel
+          twine check dist/*
+          twine upload dist/*
