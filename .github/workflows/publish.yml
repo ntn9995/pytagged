@@ -1,12 +1,8 @@
 name: publish-pypi
 
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required: true
-        default: 'Mona the Octocat'
+  release:
+    types: [created]
 
 jobs:
   deploy:
@@ -26,6 +22,7 @@ jobs:
           pip install --upgrade setuptools wheel twine
           pip install .
           pytag pytagged -t develop
+          pip uninstall pytagged
 
       - name: Build & publish
         env:
@@ -34,6 +31,4 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
           twine check dist/*
-          tar -zxvf dist/*.gz
-          tail -100 build/lib/pytagged/cli.py
-          tail -100 pytagged/cli.py
+          twine upload dist/*
