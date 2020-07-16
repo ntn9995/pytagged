@@ -25,8 +25,8 @@ jobs:
           pip install --upgrade setuptools wheel twine
           pip install .
           pytag pytagged -t develop
-          pip uninstall pytagged
-      
+          pytag -h -t
+
       - name: Build & publish
         env:
           TWINE_USERNAME: __token__
