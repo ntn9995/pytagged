@@ -6,8 +6,11 @@ on:
   release:
     types: [created]
   workflow_dispatch:
-    tags:
-      description: "Test publish workflow"
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'Mona the Octocat'
 
 jobs:
   deploy:
