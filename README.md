@@ -58,6 +58,8 @@ While these example are fairly trivial, pytagged is flexible and lets you define
 
 Simply use: `pip install pytagged`, or you can clone this directory and install pytagged directly by running `setup.py`.
 
+Note that the source code (dev version) is a little different from the pypi distribution. Functionally, they're the same, the dev version just prints out more stuffs for my debugging purposes.
+
 ### Multiple files
 pytagged accepts its first argument as a path, if the path is a directory, it recursively
 scans for all '.py' files within that directory (and the subdirectories). By default, pytagged works on the cwd. So if your project looks like this:
