@@ -1,6 +1,8 @@
 pytagged: Auto Comment CLI
 ===============================
-[![ci-workflow](https://github.com/ntn9995/pytagged/workflows/ci-workflow/badge.svg?branch=master)](https://github.com/ntn9995/pytagged/actions?query=workflow%3Aci-workflow)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ntn9995/pytagged/ci-workflow?style=flat-square)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pytagged?style=flat-square)
+![PyPI](https://img.shields.io/pypi/v/pytagged?color=blue&style=flat-square)
 
 ## What is it?
 pytagged is a simple CLI utlity written in python that helps you comment out "tagged" code. For a simple example, this might be a common pattern in your code.
