@@ -27,8 +27,6 @@ def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
     triple_quote_rgx = re.compile(rf"{TRIPLE_QUOTE}|{TRIPLE_QUOTE_SINGLE}")
     inline_rgx = re.compile(
         rf"^(?!{POUND})(?!.*({TRIPLE_QUOTE}|{TRIPLE_QUOTE_SINGLE})).*{POUND} ({tags_match_str})$")  # noqa: E501
-    print(inline_rgx)
-    print(triple_quote_rgx)
     # monotonic_time = time.monotonic
     cur_block_start_idx = -1
     cur_triple_quote_start_idx = -1
