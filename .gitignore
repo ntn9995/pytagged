@@ -1,6 +1,6 @@
+# misc
 env
 .vscode
-
 
 # bytecode & compiled stuffs
 __pycache__/
@@ -11,7 +11,8 @@ __pycache__/
 
 # packaging
 .cred
-
+dist
+build
 
 # temp paths
 tmp/
