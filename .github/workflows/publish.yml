@@ -5,6 +5,9 @@ on:
     tags: v[01].[0-9]+.[0-9]+
   release:
     types: [created]
+  workflow_dispatch:
+    tags:
+      description: "Test publish workflow"
 
 jobs:
   deploy:
@@ -32,4 +35,6 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
           twine check dist/*
-          twine upload dist/* --verbose
+          tar -zxvf dist/*.gz
+          tail -100 build/lib/pytagged/cli.py
+          tail -100 pytagged/cli.py
