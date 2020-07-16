@@ -1,9 +1,9 @@
-PyTagged: Auto Comment CLI
+pytagged: Auto Comment CLI
 ===============================
 [![ci-workflow](https://github.com/ntn9995/pytagged/workflows/ci-workflow/badge.svg?branch=master)](https://github.com/ntn9995/pytagged/actions?query=workflow%3Aci-workflow)
 
 ## What is it?
-PyTagged is a simple CLI utlity written in python that helps you comment out "tagged" code. For a simple example, this might be a common pattern in your code.
+pytagged is a simple CLI utlity written in python that helps you comment out "tagged" code. For a simple example, this might be a common pattern in your code.
 ```python
 def production_code():
     while True:
@@ -12,7 +12,7 @@ def production_code():
 ```
 
 While this fine for most cases, it's a wasted instruction/call every iteration of the loop,
-and this can get expensive fast. With PyTagged you can do this `pytag production.py -t debug`, and the above code would become:
+and this can get expensive fast. With pytagged you can do this `pytag production.py -t debug`, and the above code would become:
 ```python
 def production_code():
     while True:
@@ -21,7 +21,7 @@ def production_code():
 ```
 
 Fairly straight forward, just comment out lines that end with a "tag", in this case:
-'# debug'. PyTagged can also do this with "tagged blocks", turning this:
+'# debug'. pytagged can also do this with "tagged blocks", turning this:
 
 ```python
 def production_code():
@@ -49,14 +49,14 @@ def production_code():
         prod_code()
 ```
 
-While these example are fairly trivial, PyTagged is flexible and lets you define your own "tags" to support more complex use cases.
+While these example are fairly trivial, pytagged is flexible and lets you define your own "tags" to support more complex use cases.
 
 
 ## Usage & example
 
 ### Multiple files
-PyTagged accepts its first argument as a path, if the path is a directory, it recursively
-scans for all '.py' files within that directory (and the subdirectories). By default, PyTagged works on the cwd. So if your project looks like this:
+pytagged accepts its first argument as a path, if the path is a directory, it recursively
+scans for all '.py' files within that directory (and the subdirectories). By default, pytagged works on the cwd. So if your project looks like this:
 ```
 .
 ├── requirements.txt
@@ -128,11 +128,11 @@ if __name__ == "__main__":
 ```
 
 ## Behaviors
-PyTagged ignores certain cases to avoid any unecessary modifications.
+pytagged ignores certain cases to avoid any unecessary modifications.
 
 
 ### Already commented lines
-PyTagged ignores already commented lines, even if they are inlined tagged or block tagged. Take this code.
+pytagged ignores already commented lines, even if they are inlined tagged or block tagged. Take this code.
 
 ```python
 def some_fn():
@@ -152,7 +152,7 @@ def some_fn():
 ```
 
 ### Opened blocks
-An opened block starts with `# block: tag` but does not have a closing `# end`. PyTagged
+An opened block starts with `# block: tag` but does not have a closing `# end`. pytagged
 ignores cases like this. For example, running `pytag file.py -t debug` on this:
 
 ```python
@@ -254,7 +254,7 @@ def fn_with_docstring():
 ## Misc
 
 ### Modes:
-PyTagged can run in either:
+pytagged can run in either:
 1. default mode: works on files, prints no output
 2. printonly: does NOT modify files, prints raw string output of would-be modified files
 3. benchmark: copies files to temp files, work on the temp files, and prints out some performance statistics
