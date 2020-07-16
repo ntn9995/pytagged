@@ -2,7 +2,7 @@ from pathlib import Path
 import subprocess
 
 
-from pytagged.utils import print_raw_lines, pretty_print_title
+from pytagged._utils import print_raw_lines, pretty_print_title
 
 
 def test_cli_singles(cleanup_test_path_singles, src_to_target_params):

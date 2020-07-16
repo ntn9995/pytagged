@@ -1,6 +1,6 @@
 import pytest
 
-from pytagged import nline, utils
+from pytagged import nline, _utils
 from conftest import path_to_src_file_singles
 
 
@@ -32,12 +32,12 @@ def test_pytagged_get_newlines(src_to_target_params):
         src_lines = f.readlines()
         f.seek(0)
         actual_lines = nline.get_newlines(f, *tags)
-    utils.pretty_print_title("ACTUAL")
-    utils.print_raw_lines(actual_lines)
+    _utils.pretty_print_title("ACTUAL")
+    _utils.print_raw_lines(actual_lines)
     print('\n')
 
-    utils.pretty_print_title("EXPECTED")
-    utils.print_raw_lines(expected_lines)
+    _utils.pretty_print_title("EXPECTED")
+    _utils.print_raw_lines(expected_lines)
 
     assert src_lines != expected_lines
     assert actual_lines == expected_lines

@@ -10,7 +10,7 @@ from tempfile import TemporaryFile
 from typing import Sequence, IO, Tuple
 
 from pytagged import nline
-from pytagged.utils import print_raw_lines, pretty_print_title, time_fn_only
+from pytagged._utils import print_raw_lines, pretty_print_title, time_fn_only
 
 PY_EXT = '.py'
 
