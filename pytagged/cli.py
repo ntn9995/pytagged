@@ -1,5 +1,4 @@
 import argparse
-from enum import Enum
 import statistics
 import sys
 import textwrap
@@ -11,17 +10,9 @@ from typing import Sequence, IO, Tuple
 
 from pytagged import nline
 from pytagged._utils import print_raw_lines, pretty_print_title, time_fn_only
+from pytagged._mode import Mode
 
 PY_EXT = '.py'
-
-
-class Mode(Enum):
-    """Enum for PyTagged cli mode
-    """
-    DEFAULT = 0
-    PRINTONLY = 1
-    BENCHMARK = 2
-    VERBOSE = 3
 
 
 def printonly_single_file(io: IO, fname:str, *tags: str):
