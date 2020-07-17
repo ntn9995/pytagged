@@ -18,7 +18,7 @@ def test_pytagged_get_newlines_raise_err(tags: str):
     # should raise ValueError
     with open(path) as f:
         with pytest.raises(ValueError):
-            nline.get_newlines(f, *tags)
+            nline.get_newlines(f, tags)
 
 
 def test_pytagged_get_newlines(src_to_target_params):
@@ -31,7 +31,7 @@ def test_pytagged_get_newlines(src_to_target_params):
     with open(src_file) as f:
         src_lines = f.readlines()
         f.seek(0)
-        actual_lines = nline.get_newlines(f, *tags)
+        actual_lines = nline.get_newlines(f, tags)
     _utils.pretty_print_title("ACTUAL")
     _utils.print_raw_lines(actual_lines)
     print('\n')

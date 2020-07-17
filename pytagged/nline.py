@@ -1,5 +1,5 @@
 import re
-from typing import IO, List
+from typing import IO, List, Iterable
 
 POUND = '#'
 BLOCK_START = "# block:"
@@ -8,19 +8,13 @@ TRIPLE_QUOTE = '"""'
 TRIPLE_QUOTE_SINGLE = "'''"
 
 
-def get_newlines(file: IO, tag: str, *tags: str) -> List[str]:
-
-    if not tag or tag == ' ':
-        raise ValueError("Tags cannot be an empty string or a whitepsace")
+def get_newlines(file: IO, tags: Iterable[str]) -> List[str]:
 
     for t in tags:
         if not t or t == ' ':
             raise ValueError("Tags cannot be an empty string or a whitepsace")
 
-    tags_match_str = tag
-
-    if len(tags) > 0:
-        tags_match_str += '|' + '|'.join(tags)
+    tags_match_str = '|'.join(tags)
 
     line_split_rgx = re.compile(r"^(?!\s*$)(\s*)(.+)")
     block_start_rgx = re.compile(rf"{BLOCK_START} ({tags_match_str})")
