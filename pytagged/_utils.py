@@ -2,6 +2,8 @@ from os import get_terminal_size
 import time
 from typing import Iterable, Callable, Any, Tuple
 
+TimerCallable = Callable[..., float]
+
 
 def print_raw_lines(lines: Iterable[str]):
     for i, ln in enumerate(lines):
@@ -32,17 +34,24 @@ def time_fn(fn: Callable) -> Callable:
     second item is the measured execution time.
 
     Args:
-        fn (Callable): a callable whose execution time will be measured
+        fn (Callable): a callable whose execution time will be measured,
+        the function can also sepcify its own timer function, which
+        will be used in place of time.monotonic
 
     Returns:
         Callable: a wrapper that returns the result of the wrapped
             function and the measured execution time
     """
-    def wrapper(*args: Any, **kwargs: Any) -> Tuple[Any, float]:
+    def wrapper(*args: Any,
+                **kwargs: Any) -> Tuple[Any, float]:
 
-        st = time.monotonic()
+        timer = kwargs.get("timer")
+        if timer is None:
+            timer = time.monotonic
+
+        st = timer()
         res = fn(*args, **kwargs)
-        elapsed = time.monotonic() - st
+        elapsed = timer() - st
 
         return res, elapsed
     return wrapper
@@ -55,14 +64,22 @@ def time_fn_only(fn: Callable) -> Callable:
 
     Args:
         fn (Callable): a callable whose execution time will be measured
+        the function can also sepcify its own timer function, which
+        will be used in place of time.monotonic
 
     Returns:
         Callable: a wrapper that returns the execution time of
             the wrapped function
     """
     def wrapper(*args: Any, **kwargs: Any) -> float:
-        st = time.monotonic()
+
+        timer = kwargs.get("timer")
+
+        if timer is None:
+            timer = time.monotonic
+
+        st = timer()
         fn(*args, **kwargs)
-        return time.monotonic() - st
+        return timer() - st
 
     return wrapper
