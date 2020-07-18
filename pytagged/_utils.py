@@ -17,6 +17,7 @@ def pretty_print_title(title: str, width: int = 0,
         return
 
     width = len(title) + 20
+    title = f" {title} "
 
     if span:
         try:
