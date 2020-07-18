@@ -40,7 +40,7 @@ def run(mode: int,
         stripped = tag.strip()
         if not stripped:
             sys.stderr.write(f"Error: empty tag at {i}\n")
-            sys.exit(-1)
+            sys.exit(1)
         else:
             tags[i] = stripped
 
