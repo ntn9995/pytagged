@@ -1,27 +1,7 @@
-import pytest
-
 from pytagged import nline, _utils
-from conftest import path_to_src_file_singles
 
 
-@pytest.mark.parametrize(
-    "tags",
-    [(",debug"),
-     ("skip, ,debug"),
-     ("slow, ,debug,,benchmark")]
-)
-def test_pytagged_get_newlines_raise_err(tags: str):
-    tags = tags.split(',')
-    path = path_to_src_file_singles("hello.py")
-
-    # call get_newlines with proper file arg, but with illegal tags
-    # should raise ValueError
-    with open(path) as f:
-        with pytest.raises(ValueError):
-            nline.get_newlines(f, tags)
-
-
-def test_pytagged_get_newlines(src_to_target_params):
+def test_get_newlines(src_to_target_params):
     src_file, target_file = src_to_target_params[:2]
     tags = src_to_target_params[2:]
     print(tags)
