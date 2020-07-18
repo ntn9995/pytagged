@@ -1,9 +1,6 @@
 import re
 from typing import IO, List, Iterable
 
-POUND = '#'
-BLOCK_START = "# block:"
-BLOCK_END = "# end"
 TRIPLE_QUOTE = '"""'
 TRIPLE_QUOTE_SINGLE = "'''"
 
