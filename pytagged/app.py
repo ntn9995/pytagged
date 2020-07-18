@@ -1,3 +1,4 @@
+import io
 import statistics
 import sys
 import tempfile
@@ -25,7 +26,6 @@ IOType = Union[IO, str]
 DEFAULT_EXCLUDED_PATTERNS = [
     ".snv", "CVS", ".bzr", ".hg", ".git",
     "__pycache__", ".tox", ".eggs", "*.egg",
-    "env", ".env", "venv", ".venv"
 ]
 PY_EXT = '.py'
 
@@ -36,8 +36,15 @@ def run(mode: int,
         benchmark_runs: int = None,
         exclude_patterns: Sequence[str] = None):
 
-    mode_enum = Mode(mode)
+    for i, tag in enumerate(tags):
+        stripped = tag.strip()
+        if not stripped:
+            sys.stderr.write(f"Error: empty tag at {i}\n")
+            sys.exit(-1)
+        else:
+            tags[i] = stripped
 
+    mode_enum = Mode(mode)
     if not exclude_patterns:
         exclude_patterns = DEFAULT_EXCLUDED_PATTERNS
 
@@ -83,7 +90,7 @@ def run(mode: int,
 
 def process_files(paths: Sequence[str],
                   tags: Sequence[str], verbose: bool):
-    open_hook = open
+    open_hook = io.open
     _line_prog = nline.get_newlines
 
     def line_prog(fin: IO) -> Sequence[str]:
