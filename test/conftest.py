@@ -68,7 +68,7 @@ def write_file_from_dict(contents: Mapping[str, List[str]]):
             f.writelines(lines)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def generate_default_test_config() -> Iterator[str]:
     """Generate a config file using the default
     options, replacing the path to the test files
