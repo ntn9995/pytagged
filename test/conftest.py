@@ -100,7 +100,7 @@ def generate_options_mixins(src_to_target_params):
     # yield the config path and the parameters
     yield (config_path, *src_to_target_params)
 
-    # os.remove(config_path)
+    os.remove(config_path)
 
 
 @pytest.fixture(params=PARAMS)
