@@ -7,4 +7,3 @@ class Mode(Enum):
     DEFAULT = 0
     PRINTONLY = 1
     BENCHMARK = 2
-    VERBOSE = 3
