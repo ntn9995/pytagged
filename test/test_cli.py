@@ -366,3 +366,29 @@ def test_cli_mixins(cleanup_test_path_singles,
     print_rawlines_pretty(target_path, target_lines)
 
     assert src_lines == target_lines
+
+
+def test_cli_mixins_verbose(cleanup_test_path_singles,
+                            generate_options_mixins,
+                            flag_config,
+                            flag_tag,
+                            flag_verbose):
+    # same as test_cli_mixins but with verbose flag
+    config_path = generate_options_mixins[0]
+    src_path = generate_options_mixins[1]
+    target_path = generate_options_mixins[2]
+    tags = generate_options_mixins[3:]
+
+    cmd = ["pytag", flag_config, config_path, flag_tag, *tags]
+    subprocess.run(cmd, check=True)
+
+    with open(src_path) as f:
+        src_lines = f.readlines()
+
+    with open(target_path) as f:
+        target_lines = f.readlines()
+
+    print_rawlines_pretty(src_path, src_lines)
+    print_rawlines_pretty(target_path, target_lines)
+
+    assert src_lines == target_lines
