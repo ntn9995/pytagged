@@ -1,14 +1,19 @@
 import configparser
+import os
 from pathlib import Path
 import subprocess
-from typing import Sequence, Mapping
+from typing import (
+    Sequence, Mapping,
+    Iterator, Tuple
+)
 
 import pytest
 
 from conftest import (
     path_to_multiples,
     read_python_files_as_dict,
-    write_file_from_dict
+    write_file_from_dict,
+    TEST_FILES_PATH
 )
 from pytagged._utils import print_raw_lines, pretty_print_title
 from pytagged._files_utils import filepaths_from_path
@@ -57,6 +62,32 @@ def flag_exclude(request):
 @pytest.fixture(params=EXTEND_FLAGS)
 def flag_extend(request):
     return request.param
+
+
+@pytest.fixture
+def generate_options_exclude(
+        src_to_target_params_multiples) -> Iterator[Tuple[str, ...]]:
+    src_path, target_path = src_to_target_params_multiples[:2]
+    working_path = os.path.commonpath([src_path, target_path])
+    exclude = os.path.basename(target_path)
+    tags = src_to_target_params_multiples[2:]
+
+    config_path = f"{TEST_FILES_PATH}/configs.ini"
+    config = configparser.ConfigParser()
+
+    section = {
+        "path": working_path,
+        "config_path": config_path,
+        "tags": ','.join(tags),
+        "exclude": exclude
+    }
+    config["pytagged"] = section
+
+    with open(config_path, 'w') as f:
+        config.write(f)
+
+    yield (config_path, *src_to_target_params_multiples)
+    os.remove(config_path)
 
 
 def read_config(config_path: str) -> Mapping[str, str]:
@@ -176,11 +207,12 @@ def test_cli_multiples(cleanup_test_path_multiples,
 
 def test_cli_multiples_verbose(cleanup_test_path_multiples,
                                src_to_target_params_multiples,
+                               flag_tag,
                                flag_verbose):
 
     src_path, target_path = src_to_target_params_multiples[:2]
     tags = src_to_target_params_multiples[2:]
-    cmd = ["pytag", src_path, "-t", *tags, flag_verbose, "1"]
+    cmd = ["pytag", src_path, flag_tag, *tags, flag_verbose, "1"]
 
     print(cmd)
     subprocess.run(cmd, check=True)
@@ -277,6 +309,75 @@ def test_cli_multiples_with_opt_from_cfg(cleanup_test_path_multiples,
     for name in actual_contents:
         actual = actual_contents[name]
         expected = expected_contents[f"expected_{name}"]
+        assert actual == expected
+
+
+def test_cli_exclude(cleanup_test_path_multiples,
+                     src_to_target_params_multiples,
+                     flag_tag,
+                     flag_exclude):
+    src_path, target_path = src_to_target_params_multiples[:2]
+    working_path = os.path.commonpath([src_path, target_path])
+    exclude = os.path.basename(target_path)
+    tags = src_to_target_params_multiples[2:]
+
+    # run pytagged on the parent dir excuding the src path, should be equivalent
+    # to running pytagged on the src path
+    cmd = ["pytag", working_path, flag_exclude, exclude, flag_tag, *tags]
+    subprocess.run(cmd, check=True)
+    # same test as test_cli_multiples
+    expected_contents = {}
+    for f in Path(target_path).glob(r"**/*.py"):
+        fname = f.parts[-1]
+        with f.open() as fin:
+            expected_contents[fname] = fin.readlines()
+
+    actual_contents = {}
+    for f in Path(src_path).glob(r"**/*.py"):
+        fname = f.parts[-1]
+        with f.open() as fin:
+            actual_contents[fname] = fin.readlines()
+
+    for name in actual_contents:
+        actual = actual_contents[name]
+        expected = expected_contents[f"expected_{name}"]
+        assert actual == expected
+
+
+def test_cli_exclude_use_cfg(cleanup_test_path_multiples,
+                             generate_options_exclude,
+                             flag_tag,
+                             flag_exclude,
+                             flag_config):
+    """Test if running with exclude options from config file
+    is equivalent to running with exclude options from cli
+    """
+    config_path = generate_options_exclude[0]
+    src_path = generate_options_exclude[1]
+    target_path = generate_options_exclude[2]
+    tags = generate_options_exclude[3:]
+    working_path = os.path.commonpath([src_path, target_path])
+    exclude = os.path.basename(target_path)
+
+    # read in original files first
+    og_contents = read_python_files_as_dict(src_path)
+
+    # run with exclude options from the command line first
+    cmd = ["pytag", working_path, flag_exclude, exclude, flag_tag, *tags]
+    subprocess.run(cmd, check=True)
+    expected_contents = read_python_files_as_dict(src_path)
+
+    # restore the files for a second run
+    write_file_from_dict(og_contents)
+
+    # run with exclude options from config file
+    cmd = ["pytag", flag_config, config_path]
+    subprocess.run(cmd, check=True)
+    actual_contents = read_python_files_as_dict(src_path)
+
+    for name in actual_contents:
+        actual = actual_contents[name]
+        expected = expected_contents[name]
         assert actual == expected
 
 
