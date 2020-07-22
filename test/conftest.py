@@ -1,11 +1,13 @@
 import configparser
 from pathlib import Path
 import os
+import subprocess
 from typing import Tuple, Iterator
 from string import Template
 from typing import Mapping, Dict, List
 
 import pytest
+from _pytest.config.argparsing import Parser
 
 from pytagged.app import App
 
@@ -31,6 +33,29 @@ target_singles_path_template = Template(
     f"{TEST_FILES_PATH}/singles/target/$filename")
 target_multiples_path_template = Template(
     f"{TEST_FILES_PATH}/multiples/target/$filename")
+
+
+def pytest_addoption(parser: Parser):
+    parser.addoption("--release", action="store_true", default=False,
+                     help="Run pytagged -t develop on pytagged/ before tests")
+
+
+@pytest.fixture(scope="session")
+def is_release(request) -> bool:
+    return request.config.getoption("release")
+
+
+@pytest.fixture(scope="session", autouse=True)
+def switch_to_release(is_release):
+    if not is_release:
+        yield
+    else:
+        src_code_path = "./pytagged"
+        src_code = read_python_files_as_dict(src_code_path)
+        subprocess.run(["pytag", src_code_path, "-t", "develop"])
+        yield
+        # restore the src code
+        write_file_from_dict(src_code)
 
 
 def path_to_src_file_singles(fname: str) -> str:
