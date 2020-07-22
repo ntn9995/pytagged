@@ -51,6 +51,7 @@ class App:
         self.mode = Mode.DEFAULT
         self.verbosity = 0
         self.benchmark_runs = 100
+        self.platform = sys.platform
 
     def run(self):
         try:
@@ -144,14 +145,16 @@ class App:
                 for f in files:
                     print(f)
 
-        soft_lim, hard_lim = resource.getrlimit(resource.RLIMIT_NOFILE)
-        print("Hard limit of file descriptors: ", hard_lim)     # develop
+        # TODO: handle file resources for windows/mac
+        if self.platform.startswith("linux"):
+            soft_lim, hard_lim = resource.getrlimit(resource.RLIMIT_NOFILE)
+            print("Hard limit of file descriptors: ", hard_lim)     # develop
 
-        if soft_lim < num_files:
-            if not self._try_request_resource(resource.RLIMIT_NOFILE,
-                                              (num_files, hard_lim)):
-                sys.stderr("Cannot acquire file resources, exiting")
-                sys.exit(1)
+            if soft_lim < num_files:
+                if not self._try_request_resource(resource.RLIMIT_NOFILE,
+                                                  (num_files, hard_lim)):
+                    sys.stderr("Cannot acquire file resources, exiting")
+                    sys.exit(1)
 
         try:
 
