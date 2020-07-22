@@ -2,7 +2,6 @@ import argparse
 import configparser
 import io
 import os
-import resource
 import statistics
 import sys
 import tempfile
@@ -14,6 +13,10 @@ from typing import (
     Sequence, Optional,
     Iterable, Iterator, Tuple, Union,
 )
+
+# only import resource if linux
+if sys.platform.startswith("linux"):
+    import resource
 
 from pytagged._mode import Mode
 from pytagged import _files_utils
@@ -51,7 +54,6 @@ class App:
         self.mode = Mode.DEFAULT
         self.verbosity = 0
         self.benchmark_runs = 100
-        self.platform = sys.platform
 
     def run(self):
         try:
@@ -146,7 +148,7 @@ class App:
                     print(f)
 
         # TODO: handle file resources for windows/mac
-        if self.platform.startswith("linux"):
+        if "resource" in sys.modules:
             soft_lim, hard_lim = resource.getrlimit(resource.RLIMIT_NOFILE)
             print("Hard limit of file descriptors: ", hard_lim)     # develop
 
