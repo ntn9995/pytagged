@@ -270,7 +270,7 @@ You can override this through the -x/--exclude flag. For example: `pytag . -t de
 Another option is to use the -xt/--extend-exclude flag to add more patterns to the excluded patterns like this `pytag . -t debug --xt env`. This will add 'env' to the default excluded patterns. If you use both  -x and --xt at the same time, the resulting excluded patterns will be the union set of the two.
 
 ### Config file
-Every command line flag (except for one) can be configured in a .ini format compliant file like this:
+Every command line flag (except for -cf/--config) can be configured in a .ini format compliant file like this:
 
 ```
 [pytagged]
