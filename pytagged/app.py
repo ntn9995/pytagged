@@ -188,7 +188,7 @@ class App:
 
         if options.config_path:     # get cfg options if provided
             cfg_options = self._get_cfg_opts(options.config_path)
-            options = options.replace_if_not_none(cfg_options)
+            options = cfg_options.replace_if_not_none(options)
         return options
 
     def create_config_file_from_options(self,
