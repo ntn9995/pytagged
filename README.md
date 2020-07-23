@@ -259,11 +259,50 @@ def fn_with_docstring():
 
 ```
 
+## More advanced usage
+
+### Exclude patterns
+By default, pytagged ignore files/directories that match against any of these patterns:
+`".svn", "CVS", ".bzr", ".hg", ".git", "__pycache__", ".tox", ".eggs", "*.egg"`.
+
+You can override this through the -x/--exclude flag. For example: `pytag . -t debug -x env` will ignore any files  or directories (along with all the subdirectories and files in them) with the name 'env'. This is useful for things like ignoring python packages in a virtual environment. 
+
+Another option is to use the -xt/--extend-exclude flag to add more patterns to the excluded patterns like this `pytag . -t debug --xt env`. This will add 'env' to the default excluded patterns. If you use both  -x and --xt at the same time, the resulting excluded patterns will be the union set of the two.
+
+### Config file
+Every command line flag (except for one) can be configured in a .ini format compliant file like this:
+
+```
+[pytagged]
+
+path = pytagged
+tags =
+    debug,
+    develop
+# tags = debug, develop     this also works
+exclude = env, test*
+```
+
+To tell pytagged to use the config file you can use the -cf/--config flag: `pytag -cf [config_path]`, or you just use `pytag` and name your file 'pytagged.ini' and place it at the current directory, which is the default location that pytagged looks for the config file when it's run with no command line arguments. Note that you have to have the options declared under the `pytagged` header/session as in the example, as pytagged will only read configurations from there.
+
+You can also use command line arguments in combination with a config file: take the file 'pytagged.ini' from the previous example, and:
+```bash
+pytag --config pytagged.ini -xt build
+```
+
+Running this is equivalent to:
+```bash
+pytag pytagged -t debug develop -x env test* -xt build
+```
+
+In this scenario, the `path, tags, exclude` options are provided by the config file, while the `-xt` flag from the command line provides argument for the `extend-exclude` option. Note that the arguments from the cli take precedence over options from the config file.
+
 ## Misc
 
-### Modes:
-pytagged can run in either:
-1. default mode: works on files, prints no output
-2. printonly: does NOT modify files, prints raw string output of would-be modified files
-3. benchmark: copies files to temp files, work on the temp files, and prints out some performance statistics
-4. verbose: works on files, prints out some output
+### Modes
+There are 3 modes that pytagged runs in:
+1. Default: No output
+2. Printonly: does NOT modify files, but instead print the raw string output of what the modified files would be
+3. Benchmark: Performs a benchmark of n runs (defaults to 100, configurable through cli or config file), and prints out performance statistics of the phases in processing the files.
+
+Note: You can also use the -v/--verbose flag to print out some more info.
