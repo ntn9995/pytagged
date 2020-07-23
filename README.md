@@ -297,6 +297,8 @@ pytag pytagged -t debug develop -x env test* -xt build
 
 In this scenario, the `path, tags, exclude` options are provided by the config file, while the `-xt` flag from the command line provides argument for the `extend-exclude` option. Note that the arguments from the cli take precedence over options from the config file.
 
+By default, if no config path is provided, pytagged looks for the default `pytagged.ini` file. If one exists, pytagged will use the options provided there as a base and update/override them with options from the command line as appropriate.
+
 ## Misc
 
 ### Modes
