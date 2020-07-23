@@ -90,6 +90,24 @@ def generate_options_exclude(
     os.remove(config_path)
 
 
+@pytest.fixture
+def generate_wrong_options() -> Iterator[str]:
+    section = {
+        "path": "nonsense_path",
+        "tags": "some, fake, tags",
+        "exclude": "exclude, is, fake, news",
+        "extend": "more, fake, news"
+    }
+    config = configparser.ConfigParser()
+    config["pytagged"] = section
+    config_path = "fake_config.ini"
+    with open(config_path, 'w') as f:
+        config.write(f)
+
+    yield config_path
+    os.remove(config_path)
+
+
 def read_config(config_path: str) -> Mapping[str, str]:
     config = configparser.ConfigParser()
     config.read(config_path)
@@ -493,3 +511,47 @@ def test_cli_mixins_verbose(cleanup_test_path_singles,
     print_rawlines_pretty(target_path, target_lines)
 
     assert src_lines == target_lines
+
+
+def test_cli_mixins_precendence(cleanup_test_path_multiples,
+                                generate_wrong_options,
+                                src_to_target_params_multiples,
+                                flag_config,
+                                flag_tag,
+                                flag_exclude,
+                                flag_extend):
+    fake_config_path = generate_wrong_options
+
+    # cli args
+    src_path, target_path = src_to_target_params_multiples[:2]
+    tags = src_to_target_params_multiples[2:]
+    working_path = os.path.commonpath([src_path, target_path])
+    exclude = os.path.basename(target_path)
+    extend_exclude = "env"
+
+    # use cli args with fake config, args from cli should override
+    # the config file because they take precedence
+    # result should be the same as test_cli_multiples
+    cmd = [
+        "pytag", working_path, flag_config, fake_config_path, flag_tag, *tags,
+        flag_exclude, exclude, flag_extend, extend_exclude
+    ]
+
+    subprocess.run(cmd, check=True)
+
+    expected_contents = {}
+    for f in Path(target_path).glob(r"**/*.py"):
+        fname = f.parts[-1]
+        with f.open() as fin:
+            expected_contents[fname] = fin.readlines()
+
+    actual_contents = {}
+    for f in Path(src_path).glob(r"**/*.py"):
+        fname = f.parts[-1]
+        with f.open() as fin:
+            actual_contents[fname] = fin.readlines()
+
+    for name in actual_contents:
+        actual = actual_contents[name]
+        expected = expected_contents[f"expected_{name}"]
+        assert actual == expected
