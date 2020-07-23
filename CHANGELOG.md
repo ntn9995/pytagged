@@ -4,6 +4,30 @@ Documentations of changes to the source code and the project.
 
 ## [Unrelease]
 
+## [0.2.0] - 2020-07-23
+
+### Added
+- Exclude option: Users can now exclude files & directories that match against certain patterns using the -x/--exclude options. By default, pytagged ignores paths that match against any of these patterns (taken from flake8's default exclusion):
+    - .svn
+    - CVS
+    - .bzr
+    - .hg
+    - .git
+    - __pycache__
+    - .tox
+    - .eggs
+    - *.egg
+- Extend exclude option: Users can also use the -xt/--extend flag to add more patterns to the default excluded patterns (or provided patterns). The final set of excluded patterns will be the union set of the -x and -xt sets.
+- Config file: Every command line flag (except for -cf/--config) has a corresponding option configurable in a .ini file format. By default, pytagged looks for the `pytagged.ini` file in the working directory. The user can also provide a specific config file using the -cf/--config flag. The config file can be used in conjunction with the command line arguments, although the latter take precedence. See the README for example usage.
+
+### Changed
+- bechmark mode (-b/--benchmark) now prints out elapsed time of these individual phases:
+    - opening file
+    - parsing the files and generating replacement
+    - writing the replacement
+    - closing the file
+- verbose is now verbosity (-v/--verbosity) and is no longer mutually exclusive with the benchmark and printonly modes.
+
 ## [0.1.3] - 2020-07-16
 
 ### Changed
