@@ -22,7 +22,7 @@ jobs:
           pip install --upgrade setuptools wheel twine
           pip install .
           pytag pytagged -t develop
-          pip uninstall pytagged
+          pip uninstall pytagged -y
 
       - name: Build & publish
         env:
