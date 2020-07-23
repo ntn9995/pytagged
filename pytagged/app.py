@@ -170,26 +170,34 @@ class App:
             sys.exit(1)
 
     def get_opts(self) -> Options:
-        """Get options, first from cli args,
-        if there are none, look for the default
-        config file.
+        """Get options from cli and from config file
+        By default, we look for the config file first,
+        and then "merge" it with the cli args if there is any.
+        If both are None, raise NoOptionsException. The options
+        from cli take precedence
 
-        If the cli args provide a path to a config file,
-        the options from that config file will take precedence
-        over the cli args.
+        Returns:
+            (Options): Options obtained from cli and config file.
         """
-        options = self._get_cli_opts()
+        cli_opts = self._get_cli_opts()
 
-        if options is None:     # no cli args, fallback to configs
-            options = self._get_cfg_opts(self.default_config_file)
-            if options is None:
-                raise NoOptionsException
-            return options
+        # if no cli options, look for default config file
+        if cli_opts is None:
+            cfg_opts = self._get_cfg_opts(self.default_config_file)
+            if cfg_opts is not None:
+                return cfg_opts
+            raise NoOptionsException
 
-        if options.config_path:     # get cfg options if provided
-            cfg_options = self._get_cfg_opts(options.config_path)
-            options = cfg_options.replace_if_not_none(options)
-        return options
+        # look for provided config file if there's one, otherwise
+        # look for the default file
+        cfg_opts = self._get_cfg_opts(cli_opts.config_path) \
+            if cli_opts.config_path \
+            else self._get_cfg_opts(self.default_config_file)
+
+        # combine both if config exists, else just return the cli opts
+        return cfg_opts.update_if_not_none(cli_opts) \
+            if cfg_opts is not None \
+            else cli_opts
 
     def create_config_file_from_options(self,
                                         options: Options,
@@ -236,7 +244,7 @@ class App:
                               rsrc: int,
                               new_lim: Tuple[int, int]) -> bool:
         try:
-            resource.setrlimit(rsrc, limits=new_lim)
+            resource.setrlimit(rsrc, new_lim)
             return True
         except (OSError, ValueError):
             return False

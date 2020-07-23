@@ -19,7 +19,7 @@ class Options(NamedTuple):
     benchmark_runs: Optional[int] = None
     verbosity: Optional[int] = None
 
-    def replace_if_not_none(self, other: "Options") -> "Options":
+    def update_if_not_none(self, other: "Options") -> "Options":
         """Returns a new Options instance with values from others.
         The value from 'other' will replace the originals if it is
         not None, otherwise the original value will be kept.
