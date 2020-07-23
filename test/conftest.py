@@ -52,7 +52,7 @@ def switch_to_release(is_release):
     else:
         src_code_path = "./pytagged"
         src_code = read_python_files_as_dict(src_code_path)
-        subprocess.run(["pytag", src_code_path, "-t", "develop"])
+        subprocess.run(["pytag", src_code_path, "-t", "develop", "-xt", "env"])
         yield
         # restore the src code
         write_file_from_dict(src_code)
