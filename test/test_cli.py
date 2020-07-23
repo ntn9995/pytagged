@@ -457,20 +457,26 @@ def test_cli_no_cli_args(generate_default_test_config,
 
 
 def test_cli_mixins(cleanup_test_path_singles,
-                    generate_options_mixins,
+                    generate_options_mixins_default,
                     flag_config,
                     flag_tag):
     """Runs pytagged with mixed options from both cli
     and cfg/ini file. The test expects the tags to be
     provided by the cli, and the path to be provided
     by the config file. Should be the same result as
-    test_cli_singles
+    test_cli_singles. In addition, since the config file
+    is the default `pytagged.ini`, we should be able to
+    just run pytagged without the -cf/--config flag, so we'll
+    test both options.
     """
 
-    config_path = generate_options_mixins[0]
-    src_path = generate_options_mixins[1]
-    target_path = generate_options_mixins[2]
-    tags = generate_options_mixins[3:]
+    config_path = generate_options_mixins_default[0]
+    src_path = generate_options_mixins_default[1]
+    target_path = generate_options_mixins_default[2]
+    tags = generate_options_mixins_default[3:]
+
+    with open(src_path) as f:
+        og_src_content = f.read()
 
     cmd = ["pytag", flag_config, config_path, flag_tag, *tags]
     subprocess.run(cmd, check=True)
@@ -486,17 +492,30 @@ def test_cli_mixins(cleanup_test_path_singles,
 
     assert src_lines == target_lines
 
+    # restore the file and run pytagged again
+    # with no config flag
+    with open(src_path, 'w') as f:
+        f.write(og_src_content)
+
+    cmd = ["pytag", flag_tag, *tags]
+    subprocess.run(cmd, check=True)
+    with open(src_path) as f:
+        src_lines = f.readlines()
+    print_rawlines_pretty(src_path, src_lines)
+    print_rawlines_pretty(target_path, target_lines)
+    assert src_lines == target_lines
+
 
 def test_cli_mixins_verbose(cleanup_test_path_singles,
-                            generate_options_mixins,
+                            generate_options_mixins_default,
                             flag_config,
                             flag_tag,
                             flag_verbose):
     # same as test_cli_mixins but with verbose flag
-    config_path = generate_options_mixins[0]
-    src_path = generate_options_mixins[1]
-    target_path = generate_options_mixins[2]
-    tags = generate_options_mixins[3:]
+    config_path = generate_options_mixins_default[0]
+    src_path = generate_options_mixins_default[1]
+    target_path = generate_options_mixins_default[2]
+    tags = generate_options_mixins_default[3:]
 
     cmd = ["pytag", flag_config, config_path, flag_tag, *tags]
     subprocess.run(cmd, check=True)
