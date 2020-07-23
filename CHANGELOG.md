@@ -2,7 +2,7 @@
 
 Documentations of changes to the source code and the project.
 
-## [Unrelease]
+## [Unreleased]
 
 ## [0.2.0] - 2020-07-23
 
