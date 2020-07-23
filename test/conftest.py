@@ -111,7 +111,7 @@ def generate_default_test_config() -> Iterator[str]:
 
 
 @pytest.fixture
-def generate_options_mixins(src_to_target_params):
+def generate_options_mixins_default(src_to_target_params):
     """Mix between cli & and cfg opts. Cli provides
     tags, cfg provides path.
     """
